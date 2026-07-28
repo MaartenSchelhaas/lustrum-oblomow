@@ -1,23 +1,84 @@
-name: Deploy
+name: Build and Deploy
 
 on:
-  push:
-    branches: [staging, main]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Which environment to deploy to"
+        required: true
+        type: choice
+        options:
+          - acc
+          - prod
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
 
 jobs:
-  build:
+  guard:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - name: Enforce main-only for prod
+        run: |
+          if [ "${{ inputs.environment }}" = "prod" ] && [ "${{ github.ref_name }}" != "main" ]; then
+            echo "❌ Refusing to deploy to prod from branch '${{ github.ref_name }}' — prod deploys must come from main."
+            exit 1
+          fi
+          echo "✅ Check passed: environment=${{ inputs.environment }}, branch=${{ github.ref_name }}"
 
-      - name: Set up uv
-        uses: astral-sh/setup-uv@v3
+  build-and-push:
+    needs: guard
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    outputs:
+      image_tag: ${{ steps.meta.outputs.tag }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set image tag
+        id: meta
+        run: |
+          echo "tag=${{ inputs.environment }}-${{ github.sha }}" >> "$GITHUB_OUTPUT"
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
         with:
-          version: "latest"
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Install dependencies
-        run: uv sync --frozen --no-dev
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: |
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.meta.outputs.tag }}
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ inputs.environment }}-latest
 
-      - name: Build Docker image
-        run: docker build -t lustrum-oblomow:${{ github.sha }} .
+  deploy:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    steps:
+      - name: Connect to Tailscale
+        uses: tailscale/github-action@v3
+        with:
+          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+          oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
+          tags: tag:github-actions
+
+      - name: Deploy over SSH
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd ~/stacks/oblomow-${{ inputs.environment }}
+            echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+            export IMAGE_TAG=${{ needs.build-and-push.outputs.image_tag }}
+            docker compose pull
+            docker compose up -d
