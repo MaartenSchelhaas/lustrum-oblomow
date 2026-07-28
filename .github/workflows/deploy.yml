@@ -1,0 +1,23 @@
+name: Deploy
+
+on:
+  push:
+    branches: [staging, main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v3
+        with:
+          version: "latest"
+
+      - name: Install dependencies
+        run: uv sync --frozen --no-dev
+
+      - name: Build Docker image
+        run: docker build -t lustrum-oblomow:${{ github.sha }} .
