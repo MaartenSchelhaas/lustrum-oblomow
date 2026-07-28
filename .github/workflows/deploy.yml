@@ -35,8 +35,13 @@ jobs:
       packages: write
     outputs:
       image_tag: ${{ steps.meta.outputs.tag }}
+      image_name: ${{ steps.repo.outputs.name }}
     steps:
       - uses: actions/checkout@v4
+
+      - name: Set lowercase image name
+        id: repo
+        run: echo "name=$(echo '${{ github.repository }}' | tr '[:upper:]' '[:lower:]')" >> "$GITHUB_OUTPUT"
 
       - name: Set image tag
         id: meta
@@ -56,8 +61,8 @@ jobs:
           context: .
           push: true
           tags: |
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.meta.outputs.tag }}
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ inputs.environment }}-latest
+            ghcr.io/${{ steps.repo.outputs.name }}:${{ steps.meta.outputs.tag }}
+            ghcr.io/${{ steps.repo.outputs.name }}:${{ inputs.environment }}-latest
 
   deploy:
     needs: build-and-push
