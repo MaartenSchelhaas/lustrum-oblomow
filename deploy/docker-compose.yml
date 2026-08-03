@@ -1,0 +1,16 @@
+services:
+  oblomow:
+    image: ghcr.io/maartenschelhaas/lustrum-oblomow:${IMAGE_TAG:?IMAGE_TAG ontbreekt in .env}
+    container_name: oblomow-${ENVIRONMENT:?ENVIRONMENT ontbreekt in .env}
+    restart: unless-stopped
+    networks:
+      - proxy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.oblomow-${ENVIRONMENT}.rule=Host(`${PUBLIC_HOST:?PUBLIC_HOST ontbreekt in .env}`)"
+      - "traefik.http.routers.oblomow-${ENVIRONMENT}.entrypoints=web"
+      - "traefik.http.services.oblomow-${ENVIRONMENT}.loadbalancer.server.port=8000"
+
+networks:
+  proxy:
+    external: true

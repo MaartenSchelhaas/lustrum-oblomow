@@ -11,21 +11,34 @@ on:
           - acc
           - prod
 
-env:
-  REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
+concurrency:
+  group: deploy-${{ inputs.environment }}
+  cancel-in-progress: false
 
 jobs:
   guard:
     runs-on: ubuntu-latest
+    outputs:
+      public_host: ${{ steps.host.outputs.host }}
     steps:
       - name: Enforce main-only for prod
         run: |
           if [ "${{ inputs.environment }}" = "prod" ] && [ "${{ github.ref_name }}" != "main" ]; then
-            echo "❌ Refusing to deploy to prod from branch '${{ github.ref_name }}' — prod deploys must come from main."
+            echo "Refusing to deploy to prod from branch '${{ github.ref_name }}'"
             exit 1
           fi
-          echo "✅ Check passed: environment=${{ inputs.environment }}, branch=${{ github.ref_name }}"
+          echo "Check passed: environment=${{ inputs.environment }}, branch=${{ github.ref_name }}"
+
+      - name: Resolve public hostname
+        id: host
+        run: |
+          case "${{ inputs.environment }}" in
+            prod) HOST="lustrum-oblomow.harmware.nl" ;;
+            acc)  HOST="acc-lustrum-oblomow.harmware.nl" ;;
+            *)    echo "Unknown environment"; exit 1 ;;
+          esac
+          echo "host=${HOST}" >> "$GITHUB_OUTPUT"
+          echo "Deploying to ${HOST}"
 
   build-and-push:
     needs: guard
@@ -35,7 +48,6 @@ jobs:
       packages: write
     outputs:
       image_tag: ${{ steps.meta.outputs.tag }}
-      image_name: ${{ steps.repo.outputs.name }}
     steps:
       - uses: actions/checkout@v4
 
@@ -45,8 +57,7 @@ jobs:
 
       - name: Set image tag
         id: meta
-        run: |
-          echo "tag=${{ inputs.environment }}-${{ github.sha }}" >> "$GITHUB_OUTPUT"
+        run: echo "tag=${{ inputs.environment }}-${{ github.sha }}" >> "$GITHUB_OUTPUT"
 
       - name: Log in to GHCR
         uses: docker/login-action@v3
@@ -63,11 +74,15 @@ jobs:
           tags: |
             ghcr.io/${{ steps.repo.outputs.name }}:${{ steps.meta.outputs.tag }}
             ghcr.io/${{ steps.repo.outputs.name }}:${{ inputs.environment }}-latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
   deploy:
-    needs: build-and-push
+    needs: [guard, build-and-push]
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
+
       - name: Connect to Tailscale
         uses: tailscale/github-action@v3
         with:
@@ -75,15 +90,65 @@ jobs:
           oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
           tags: tag:github-actions
 
+      - name: Copy compose file
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: "deploy/docker-compose.yml"
+          target: "~/stacks/oblomow-${{ inputs.environment }}"
+          strip_components: 1
+
       - name: Deploy over SSH
         uses: appleboy/ssh-action@v1.2.0
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
+          envs: IMAGE_TAG,ENVIRONMENT,PUBLIC_HOST,GHCR_TOKEN,GHCR_USER
+          script_stop: true
           script: |
-            cd ~/stacks/oblomow-${{ inputs.environment }}
-            echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-            export IMAGE_TAG=${{ needs.build-and-push.outputs.image_tag }}
+            set -euo pipefail
+
+            cd ~/stacks/oblomow-${ENVIRONMENT}
+
+            echo "${GHCR_TOKEN}" | docker login ghcr.io -u "${GHCR_USER}" --password-stdin
+
+            PREVIOUS_TAG=$(grep '^IMAGE_TAG=' .env 2>/dev/null | cut -d= -f2 || echo "")
+            echo "Vorige versie: ${PREVIOUS_TAG:-<geen>}"
+            echo "Nieuwe versie: ${IMAGE_TAG}"
+
+            cat > .env <<EOF
+            IMAGE_TAG=${IMAGE_TAG}
+            ENVIRONMENT=${ENVIRONMENT}
+            PUBLIC_HOST=${PUBLIC_HOST}
+            EOF
+
+            docker compose config --quiet
+
             docker compose pull
             docker compose up -d
+
+            echo "Wachten tot de app reageert..."
+            for i in $(seq 1 15); do
+              if docker compose exec -T oblomow python -c \
+                "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://localhost:8000/', timeout=2).status < 400 else 1)" 2>/dev/null; then
+                echo "App is gezond (na ${i}s)"
+                docker compose ps
+                docker image prune -af --filter "until=168h"
+                exit 0
+              fi
+              sleep 1
+            done
+
+            echo "App reageert niet na 15 seconden"
+            docker compose ps
+            docker compose logs --tail=50
+            exit 1
+        env:
+          IMAGE_TAG: ${{ needs.build-and-push.outputs.image_tag }}
+          ENVIRONMENT: ${{ inputs.environment }}
+          PUBLIC_HOST: ${{ needs.guard.outputs.public_host }}
+          GHCR_TOKEN: ${{ secrets.GHCR_TOKEN }}
+          GHCR_USER: ${{ github.actor }}
