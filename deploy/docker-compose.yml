@@ -1,3 +1,5 @@
+# Server deployment. Pulls a prebuilt image from GHCR; values come from .env,
+# which the deploy pipeline writes. Local development lives in the root compose file.
 services:
   oblomow:
     image: ghcr.io/maartenschelhaas/lustrum-oblomow:${IMAGE_TAG:?IMAGE_TAG ontbreekt in .env}
