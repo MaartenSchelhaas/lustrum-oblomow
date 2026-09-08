@@ -111,6 +111,12 @@ p {
   margin: 0 0 1em;
 }
 
+/* Small-caps contexts (nav, hero, headings) would otherwise render this
+   ordinal "e" as a capital, since font-variant is inherited. */
+sup {
+  font-variant: normal;
+}
+
 .container {
   max-width: var(--max-width);
   margin: 0 auto;
@@ -301,10 +307,23 @@ p {
   font-variant: small-caps;
   color: var(--green-900);
   font-size: clamp(1.7rem, 3.2vw, 2.3rem);
+  margin-bottom: 0.2em;
 }
 
 .section--dark .split-body h2 {
   color: var(--white);
+}
+
+.activity-date {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 1.1rem;
+  color: var(--green-700);
+  margin: 0 0 0.9em;
+}
+
+.section--dark .activity-date {
+  color: rgba(255, 255, 255, 0.75);
 }
 
 .split-body p {
@@ -386,9 +405,8 @@ p {
 /* ---------- Activity timeline (kalender) ---------- */
 
 .timeline {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
   gap: 18px;
   margin-top: 32px;
 }
@@ -399,7 +417,11 @@ p {
   border-radius: var(--radius);
   padding: 18px 22px;
   text-align: center;
-  min-width: 130px;
+  min-height: 96px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .timeline-date {
@@ -513,6 +535,31 @@ a.product-card:hover {
   font-size: 1.05rem;
 }
 
+.package-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 28px;
+  margin: 40px 0;
+}
+
+.package-card {
+  background: var(--white);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow-soft);
+}
+
+.package-card-body {
+  padding: 24px 28px 28px;
+}
+
+.package-card h3 {
+  font-variant: small-caps;
+  color: var(--green-900);
+  font-size: 1.3rem;
+  margin-bottom: 0.2em;
+}
+
 .gadget-list {
   list-style: disc;
   padding-left: 20px;
@@ -557,6 +604,7 @@ a.product-card:hover {
 }
 
 .board-row-inner {
+  width: 100%;
   max-width: var(--max-width);
   margin: 0 auto;
   padding: 0 24px;
@@ -564,10 +612,6 @@ a.product-card:hover {
   align-items: center;
   gap: 40px;
   flex-wrap: wrap;
-}
-
-.board-row:nth-child(even) .board-row-inner {
-  flex-direction: row-reverse;
 }
 
 .board-avatar {
@@ -607,23 +651,13 @@ a.product-card:hover {
   color: var(--gold);
 }
 
-.board-phone {
-  display: block;
-  margin-top: 12px;
-  font-size: 0.85rem;
-  color: var(--ink-soft);
-  font-style: italic;
-}
-
-.board-row:nth-child(even) .board-phone {
-  color: rgba(255, 255, 255, 0.7);
-}
-
 .board-members {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+  align-content: center;
   gap: 20px;
+  width: 280px;
   flex-shrink: 0;
 }
 
@@ -791,7 +825,10 @@ a.product-card:hover {
 .product-photo {
   width: 100%;
   aspect-ratio: 1 / 1;
-  object-fit: cover;
+  object-fit: contain;
+  background: var(--cream);
+  padding: 14px;
+  box-sizing: border-box;
   display: block;
 }
 
@@ -804,52 +841,150 @@ a.product-card:hover {
 
 /* ---------- Lustrumreis timeline ---------- */
 
-.reis-timeline {
+.reis-row {
   position: relative;
-  max-width: 280px;
-  margin: 56px auto 0;
-  min-height: 220px;
 }
 
-.reis-timeline::before {
-  content: "";
-  position: absolute;
-  left: 12px;
-  top: 12px;
-  bottom: 12px;
-  border-left: 3px dashed var(--gold-dark);
+.reis-row:nth-child(even) {
+  background: var(--green-700);
+  color: var(--white);
 }
 
-.reis-timeline-item {
-  position: absolute;
-  left: 0;
+.reis-row:nth-child(even) .reis-day-date {
+  color: var(--white);
+}
+
+.reis-row-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 40px 24px;
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 40px;
+  position: relative;
 }
 
-.reis-timeline-item:first-child {
+.reis-row-line {
+  position: absolute;
   top: 0;
-}
-
-.reis-timeline-item:last-child {
   bottom: 0;
+  left: 130px;
+  border-left: 3px dashed var(--gold-dark);
+  z-index: 1;
 }
 
-.reis-timeline-dot {
-  width: 24px;
-  height: 24px;
+.reis-row:nth-child(even) .reis-row-media .placeholder-media {
+  z-index: 0;
+}
+
+.reis-dot {
+  position: absolute;
+  left: 130px;
+  top: 50%;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
   background: var(--gold);
   box-shadow: var(--shadow-soft);
+  transform: translate(-50%, -50%);
+  z-index: 3;
+}
+
+.reis-row-media {
+  position: relative;
+  width: 260px;
   flex-shrink: 0;
 }
 
-.reis-timeline-date {
+.reis-row-media .placeholder-media {
+  aspect-ratio: 4 / 3;
+  position: relative;
+  z-index: 2;
+}
+
+.reis-row-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.reis-day-date {
   font-family: var(--font-display);
   font-weight: 800;
-  font-size: 1.15rem;
   color: var(--green-900);
+  font-size: 1.2rem;
+  margin-bottom: 8px;
+}
+
+.reis-day-text {
+  margin: 0;
+}
+
+.reis-row:nth-child(even) .reis-day-text {
+  color: rgba(255, 255, 255, 0.88);
+}
+
+@media (max-width: 860px) {
+  .reis-row-inner {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+    padding: 32px 24px 32px 48px;
+  }
+
+  .reis-row-media {
+    width: 100%;
+  }
+
+  .reis-row-line {
+    left: 12px;
+    opacity: 0.4;
+  }
+
+  .reis-dot {
+    left: 12px;
+  }
+
+  .reis-row-body {
+    padding-left: 4px;
+  }
+}
+
+@media (max-width: 860px) {
+  .reis-day-timeline {
+    max-width: 420px;
+  }
+
+  .reis-day-line {
+    display: none;
+  }
+
+  .reis-day-timeline::before {
+    content: "";
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    bottom: 10px;
+    border-left: 3px dashed var(--gold-dark);
+  }
+
+  .reis-day {
+    height: auto;
+    padding: 0 0 32px 40px;
+  }
+
+  .reis-day--left .reis-dot,
+  .reis-day--right .reis-dot {
+    left: 10px;
+    top: 10px;
+  }
+
+  .reis-day--left .reis-day-card,
+  .reis-day--right .reis-day-card {
+    position: static;
+    width: 100%;
+    text-align: left;
+    transform: none;
+  }
 }
 
 /* ---------- Responsive ---------- */
@@ -858,6 +993,10 @@ a.product-card:hover {
   .nav {
     justify-content: center;
     text-align: center;
+  }
+
+  .timeline {
+    grid-template-columns: repeat(3, 1fr);
   }
 
   .split {
@@ -890,6 +1029,10 @@ a.product-card:hover {
     justify-content: flex-start;
     align-items: center;
     gap: 12px;
+  }
+
+  .timeline {
+    grid-template-columns: 1fr;
   }
 }
 

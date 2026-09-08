@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Lustrumreis: VIII Lustrum Oblomow{% endblock %}
+{% block title %}Lustrumreis: VIIIe Lustrum Oblomow{% endblock %}
 {% block description %}Informatie over de lustrumreis van H.S.D. Oblomow.{% endblock %}
 {% block content %}
 
@@ -7,23 +7,39 @@
     <h1>Lustrumreis</h1>
   </section>
 
-  <section class="section">
+  <section class="section section--flush-bottom">
     <div class="container container--narrow">
       <p class="lead">
-        Het programma van de lustrumreis zal zo snel mogelijk bekendgemaakt worden.
+        30 juli t/m 8 augustus. Het programma van de lustrumreis zal zo snel mogelijk
+        bekendgemaakt worden.
       </p>
-
-      <div class="reis-timeline">
-        <div class="reis-timeline-item">
-          <div class="reis-timeline-dot"></div>
-          <div class="reis-timeline-date">30 juli</div>
-        </div>
-        <div class="reis-timeline-item">
-          <div class="reis-timeline-dot"></div>
-          <div class="reis-timeline-date">8 augustus</div>
-        </div>
-      </div>
     </div>
   </section>
+
+  {% set reis_dagen = ["30 juli", "31 juli", "1 augustus", "2 augustus", "3 augustus", "4 augustus", "5 augustus", "6 augustus", "7 augustus", "8 augustus"] %}
+  {% for dag in reis_dagen %}
+  <div class="reis-row">
+    <div class="reis-row-inner">
+      <div class="reis-row-line"></div>
+      <div class="reis-dot"></div>
+      <div class="reis-row-media">
+        <div class="placeholder-media {{ 'light' if loop.index0 % 2 == 0 else '' }}">
+          <div>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <rect x="3" y="3" width="18" height="18" rx="2" />
+              <circle cx="8.5" cy="8.5" r="1.5" />
+              <path d="M21 15l-5-5-4 4-3-3-6 6" />
+            </svg>
+            <div>Foto volgt</div>
+          </div>
+        </div>
+      </div>
+      <div class="reis-row-body">
+        <div class="reis-day-date">{{ dag }}</div>
+        <p class="reis-day-text">Programma van deze dag volgt.</p>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
 
 {% endblock %}

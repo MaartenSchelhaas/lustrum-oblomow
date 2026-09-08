@@ -1,6 +1,52 @@
 "use strict";
 
 /**
+ * Returns the UTC offset (in minutes) that `timeZone` has at the instant
+ * `utcMillis`, so a wall-clock time in that zone can be converted to a UTC
+ * timestamp regardless of DST.
+ */
+function getTimeZoneOffsetMinutes(utcMillis, timeZone) {
+  const dtf = new Intl.DateTimeFormat("en-US", {
+    timeZone,
+    hour12: false,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  });
+  const parts = {};
+  for (const { type, value } of dtf.formatToParts(new Date(utcMillis))) {
+    parts[type] = value;
+  }
+  const asUTC = Date.UTC(
+    +parts.year,
+    +parts.month - 1,
+    +parts.day,
+    +parts.hour === 24 ? 0 : +parts.hour,
+    +parts.minute,
+    +parts.second
+  );
+  return (asUTC - utcMillis) / 60000;
+}
+
+/**
+ * Converts a wall-clock date/time in Europe/Amsterdam to a UTC timestamp,
+ * automatically applying CET (UTC+1) or CEST (UTC+2) depending on whether
+ * DST is in effect on that date. This keeps the countdown correct for every
+ * visitor's own timezone and survives the yearly DST switch unchanged.
+ */
+function amsterdamTimeToUTC(isoLocal) {
+  const [datePart, timePart] = isoLocal.split("T");
+  const [year, month, day] = datePart.split("-").map(Number);
+  const [hour, minute, second] = timePart.split(":").map(Number);
+  const utcGuess = Date.UTC(year, month - 1, day, hour, minute, second || 0);
+  const offsetMinutes = getTimeZoneOffsetMinutes(utcGuess, "Europe/Amsterdam");
+  return utcGuess - offsetMinutes * 60000;
+}
+
+/**
  * Countdown to the lustrum founding date.
  * Only ever writes numbers via textContent, never innerHTML.
  */
@@ -8,7 +54,7 @@ function initCountdown() {
   const root = document.querySelector("[data-countdown]");
   if (!root) return;
 
-  const target = new Date(root.dataset.countdown).getTime();
+  const target = amsterdamTimeToUTC(root.dataset.countdown);
   const els = {
     days: root.querySelector('[data-unit="days"]'),
     hours: root.querySelector('[data-unit="hours"]'),

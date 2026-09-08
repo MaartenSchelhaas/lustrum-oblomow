@@ -33,21 +33,6 @@ async def gadgets(request: Request) -> HTMLResponse:
     return templates.TemplateResponse(request, "gadgets/index.html", {"active_page": "gadgets"})
 
 
-@router.get("/gadgets/pakket-1", response_class=HTMLResponse)
-async def gadgets_pakket_1(request: Request) -> HTMLResponse:
-    return templates.TemplateResponse(request, "gadgets/pakket-1.html", {"active_page": "gadgets"})
-
-
-@router.get("/gadgets/pakket-2", response_class=HTMLResponse)
-async def gadgets_pakket_2(request: Request) -> HTMLResponse:
-    return templates.TemplateResponse(request, "gadgets/pakket-2.html", {"active_page": "gadgets"})
-
-
-@router.get("/gadgets/losse-gadgets", response_class=HTMLResponse)
-async def gadgets_losse_gadgets(request: Request) -> HTMLResponse:
-    return templates.TemplateResponse(request, "gadgets/losse-gadgets.html", {"active_page": "gadgets"})
-
-
 @router.get("/contact", response_class=HTMLResponse)
 async def contact(request: Request) -> HTMLResponse:
     return templates.TemplateResponse(request, "contact.html", {"active_page": "contact"})
