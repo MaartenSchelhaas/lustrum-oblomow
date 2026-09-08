@@ -1,11 +1,10 @@
-# Local development: builds from the Dockerfile, hot reload via the src mount.
-# The server version lives in deploy/docker-compose.yml.
+# Local development: builds from the Dockerfile and runs it exactly like the
+# server does (deploy/docker-compose.yml) — no volume mount, no --reload, so
+# what you see locally is what the built image actually contains.
+# Run with `docker compose up --build` to make sure you're testing a fresh build.
 services:
   oblomow:
     build: .
     image: lustrum-oblomow:latest
-    command: uv run uvicorn lustrum_oblomow.main:app --host 0.0.0.0 --port 8000 --reload
     ports:
       - "8000:8000"
-    volumes:
-      - ./src:/app/src
