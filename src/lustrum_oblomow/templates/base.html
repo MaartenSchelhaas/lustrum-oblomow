@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}VIII Lustrum der H.S.D. Oblomow{% endblock %}</title>
+  <meta name="description" content="{% block description %}VIII Lustrum van H.S.D. Oblomow, 18 januari 2027.{% endblock %}" />
+  <link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="/assets/css/style.css" />
+</head>
+<body>
+  {% set nav_items = [
+    ("/activiteiten", "Activiteiten", "activiteiten"),
+    ("/lustrumreis", "Lustrumreis", "lustrumreis"),
+    ("/spaarplannen", "Spaarplannen", "spaarplannen"),
+    ("/gadgets", "Gadgets", "gadgets"),
+    ("/contact", "Contact", "contact"),
+    ("/faq", "FAQ", "faq"),
+  ] %}
+  <header class="site-header">
+    <nav class="nav">
+      <a href="/" class="brand">
+        <img src="/assets/img/branding/adelaar.png" alt="Oblomow" class="brand-mark" />
+        <span class="brand-name">Oblomow</span>
+      </a>
+      <ul class="nav-links">
+        {% for href, label, key in nav_items %}
+        <li><a href="{{ href }}"{% if active_page == key %} aria-current="page"{% endif %}>{{ label }}</a></li>
+        {% endfor %}
+      </ul>
+    </nav>
+  </header>
+
+  {% block content %}{% endblock %}
+
+  <footer class="site-footer">
+    <p>&copy; 2026 <strong>H.S.D. Oblomow</strong>, VIII Lustrum</p>
+  </footer>
+
+  <script src="/assets/js/main.js"></script>
+</body>
+</html>

@@ -1,40 +1,58 @@
-"""Routes that serve the static HTML pages of the site."""
+"""Routes that render the site's Jinja2 page templates."""
 
-from pathlib import Path
+from fastapi import APIRouter, Request
+from fastapi.responses import HTMLResponse
 
-from fastapi import APIRouter
-from fastapi.responses import FileResponse
-
-STATIC_DIR = Path(__file__).resolve().parent.parent / "static"
+from lustrum_oblomow.templating import templates
 
 router = APIRouter(include_in_schema=False)
 
 
-@router.get("/")
-async def home() -> FileResponse:
-    return FileResponse(STATIC_DIR / "index.html")
+@router.get("/", response_class=HTMLResponse)
+async def home(request: Request) -> HTMLResponse:
+    return templates.TemplateResponse(request, "index.html", {"active_page": "home"})
 
 
-@router.get("/activiteiten")
-async def activiteiten() -> FileResponse:
-    return FileResponse(STATIC_DIR / "activiteiten.html")
+@router.get("/activiteiten", response_class=HTMLResponse)
+async def activiteiten(request: Request) -> HTMLResponse:
+    return templates.TemplateResponse(request, "activiteiten.html", {"active_page": "activiteiten"})
 
 
-@router.get("/lustrumreis")
-async def lustrumreis() -> FileResponse:
-    return FileResponse(STATIC_DIR / "lustrumreis.html")
+@router.get("/lustrumreis", response_class=HTMLResponse)
+async def lustrumreis(request: Request) -> HTMLResponse:
+    return templates.TemplateResponse(request, "lustrumreis.html", {"active_page": "lustrumreis"})
 
 
-@router.get("/gadgets")
-async def gadgets() -> FileResponse:
-    return FileResponse(STATIC_DIR / "gadgets.html")
+@router.get("/spaarplannen", response_class=HTMLResponse)
+async def spaarplannen(request: Request) -> HTMLResponse:
+    return templates.TemplateResponse(request, "spaarplannen.html", {"active_page": "spaarplannen"})
 
 
-@router.get("/contact")
-async def contact() -> FileResponse:
-    return FileResponse(STATIC_DIR / "contact.html")
+@router.get("/gadgets", response_class=HTMLResponse)
+async def gadgets(request: Request) -> HTMLResponse:
+    return templates.TemplateResponse(request, "gadgets/index.html", {"active_page": "gadgets"})
 
 
-@router.get("/faq")
-async def faq() -> FileResponse:
-    return FileResponse(STATIC_DIR / "faq.html")
+@router.get("/gadgets/pakket-1", response_class=HTMLResponse)
+async def gadgets_pakket_1(request: Request) -> HTMLResponse:
+    return templates.TemplateResponse(request, "gadgets/pakket-1.html", {"active_page": "gadgets"})
+
+
+@router.get("/gadgets/pakket-2", response_class=HTMLResponse)
+async def gadgets_pakket_2(request: Request) -> HTMLResponse:
+    return templates.TemplateResponse(request, "gadgets/pakket-2.html", {"active_page": "gadgets"})
+
+
+@router.get("/gadgets/losse-gadgets", response_class=HTMLResponse)
+async def gadgets_losse_gadgets(request: Request) -> HTMLResponse:
+    return templates.TemplateResponse(request, "gadgets/losse-gadgets.html", {"active_page": "gadgets"})
+
+
+@router.get("/contact", response_class=HTMLResponse)
+async def contact(request: Request) -> HTMLResponse:
+    return templates.TemplateResponse(request, "contact.html", {"active_page": "contact"})
+
+
+@router.get("/faq", response_class=HTMLResponse)
+async def faq(request: Request) -> HTMLResponse:
+    return templates.TemplateResponse(request, "faq.html", {"active_page": "faq"})

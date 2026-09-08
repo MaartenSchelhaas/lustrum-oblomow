@@ -1,32 +1,7 @@
-<!DOCTYPE html>
-<html lang="nl">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>FAQ — VIII Lustrum Oblomow</title>
-  <meta name="description" content="Veelgestelde vragen over het VIII Lustrum van H.S.D. Oblomow." />
-  <link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml" />
-  <link rel="stylesheet" href="/assets/css/style.css" />
-</head>
-<body>
-  <header class="site-header">
-    <nav class="nav">
-      <a href="/" class="brand">
-        <svg class="brand-mark" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-          <circle cx="32" cy="32" r="29" fill="none" stroke="currentColor" stroke-width="2.5" />
-          <text x="32" y="42" text-anchor="middle" font-family="Playfair Display, serif" font-weight="700" font-size="30" fill="currentColor">O</text>
-        </svg>
-        <span class="brand-name">Oblomow</span>
-      </a>
-      <ul class="nav-links">
-        <li><a href="/activiteiten">Activiteiten</a></li>
-        <li><a href="/lustrumreis">Lustrumreis</a></li>
-        <li><a href="/gadgets">Gadgets</a></li>
-        <li><a href="/contact">Contact</a></li>
-        <li><a href="/faq" aria-current="page">FAQ</a></li>
-      </ul>
-    </nav>
-  </header>
+{% extends "base.html" %}
+{% block title %}FAQ: VIII Lustrum Oblomow{% endblock %}
+{% block description %}Veelgestelde vragen over het VIII Lustrum van H.S.D. Oblomow.{% endblock %}
+{% block content %}
 
   <section class="hero hero--compact">
     <h1>FAQ</h1>
@@ -95,7 +70,7 @@
           </svg>
         </button>
         <div class="faq-answer">
-          <p>Zodra de reis is uitgewerkt, delen we een indicatie van de kosten via deze pagina.</p>
+          <p>Zodra de reis is uitgewerkt, delen we een indicatie van de kosten via deze pagina. Kijk ook op de spaarplannenpagina voor de spaaropties.</p>
         </div>
       </div>
 
@@ -107,7 +82,7 @@
           </svg>
         </button>
         <div class="faq-answer">
-          <p>Aanmelden kan zodra de inschrijving opent &mdash; dit wordt vooraf via onze kanalen aangekondigd.</p>
+          <p>Aanmelden kan zodra de inschrijving opent. Dit wordt vooraf via onze kanalen aangekondigd.</p>
         </div>
       </div>
 
@@ -121,7 +96,7 @@
           </svg>
         </button>
         <div class="faq-answer">
-          <p>Bekijk de gadgetspagina voor het actuele overzicht van het lustrumpakket.</p>
+          <p>Bekijk de gadgetspagina voor het actuele overzicht van het lustrumpakket, reispakket en de losse gadgets.</p>
         </div>
       </div>
 
@@ -140,10 +115,4 @@
     </div>
   </section>
 
-  <footer class="site-footer">
-    <p>&copy; 2026 <strong>H.S.D. Oblomow</strong> &mdash; VIII Lustrum</p>
-  </footer>
-
-  <script src="/assets/js/main.js"></script>
-</body>
-</html>
+{% endblock %}

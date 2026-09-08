@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Gadgets: VIII Lustrum Oblomow{% endblock %}
+{% block description %}De lustrumpakketten en gadgets van H.S.D. Oblomow.{% endblock %}
+{% block content %}
+
+  <section class="hero hero--compact">
+    <h1>Gadgets</h1>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <h2 class="section-title">Lustrumpakket</h2>
+      <div class="product-grid">
+        <a class="product-card" href="/gadgets/pakket-1">
+          <img src="/assets/img/gadgets/pakket-1.jpg" alt="Lustrumpakket" class="product-photo" />
+          <h3>Lustrumpakket</h3>
+          <p class="product-price">&euro;38,50</p>
+        </a>
+        <a class="product-card" href="/gadgets/pakket-2">
+          <img src="/assets/img/gadgets/pakket-2.jpg" alt="Reispakket" class="product-photo" />
+          <h3>Reispakket</h3>
+          <p class="product-price">&euro;35,95</p>
+        </a>
+        <a class="product-card" href="/gadgets/losse-gadgets">
+          <img src="/assets/img/gadgets/waterfles.jpg" alt="Losse gadgets" class="product-photo" />
+          <h3>Losse gadgets</h3>
+        </a>
+      </div>
+      <div class="product-grid-actions">
+        <button type="button" class="btn btn-gold" aria-disabled="true" title="Binnenkort beschikbaar" disabled>
+          Pakket toevoegen aan bestelling
+        </button>
+      </div>
+    </div>
+  </section>
+
+{% endblock %}
