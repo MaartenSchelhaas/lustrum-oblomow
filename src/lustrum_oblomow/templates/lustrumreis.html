@@ -7,7 +7,7 @@
     <h1>Lustrumreis</h1>
   </section>
 
-  <section class="section section--flush-bottom">
+  <section class="lustrumreis-lead">
     <div class="container container--narrow">
       <p class="lead">
         Van 30 juli t/m 8 augustus 2027 zal de lustrumreis plaatsvinden! Samen zullen we de
@@ -20,7 +20,7 @@
   {% set reis_dagen = ["30 juli", "31 juli", "1 augustus", "2 augustus", "3 augustus", "4 augustus", "5 augustus", "6 augustus", "7 augustus", "8 augustus"] %}
   {% for dag in reis_dagen %}
   {% set is_b = loop.index0 is odd %}
-  {% set own = 78 if is_b else 22 %}
+  {% set own = 73 if is_b else 27 %}
   <div class="reis-row{{ ' reis-row--b' if is_b else '' }}">
     <div class="reis-row-inner">
       <svg class="reis-row-svg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">

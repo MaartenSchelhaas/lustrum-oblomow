@@ -14,7 +14,7 @@
     ("/lustrumreis", "lustrumreis", "lustrumreis"),
     ("/spaarplannen", "spaarplannen", "spaarplannen"),
     ("/gadgets", "gadgets", "gadgets"),
-    ("/contact", "contact", "contact"),
+    ("/contact", "commissie", "contact"),
     ("/faq", "FAQ", "faq"),
   ] %}
   <header class="site-header">
@@ -34,6 +34,11 @@
   {% block content %}{% endblock %}
 
   <footer class="site-footer">
+    {% if active_page != 'contact' %}
+    <p class="footer-help">
+      Heeft u een vraag over het lustrum, check <a href="/contact" class="link-accent">de commissiepagina</a> om het juiste lid van de commissie te vinden
+    </p>
+    {% endif %}
     <p>&copy; 2026 <strong>H.S.D. Oblomow</strong>, VIII<sup>e</sup> Lustrum</p>
   </footer>
 

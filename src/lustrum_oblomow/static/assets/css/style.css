@@ -213,6 +213,10 @@ sup {
   padding: 56px 24px;
 }
 
+.hero--faq {
+  background: var(--green-700);
+}
+
 .hero h1 {
   font-size: clamp(2.4rem, 5vw, 4rem);
   font-variant: small-caps;
@@ -471,6 +475,13 @@ sup {
 .plan-card p:not(.product-price) {
   color: var(--ink-soft);
   flex: 1;
+}
+
+.plan-card .plan-note {
+  flex: 0 0 auto;
+  font-size: 0.85rem;
+  font-style: italic;
+  opacity: 0.85;
 }
 
 .plan-card .btn {
@@ -778,6 +789,14 @@ a.product-card:hover {
   color: var(--gold);
 }
 
+.footer-help {
+  margin: 0 0 10px;
+}
+
+.footer-help .link-accent {
+  color: var(--gold);
+}
+
 /* ---------- Utilities ---------- */
 
 .container--narrow {
@@ -792,6 +811,10 @@ a.product-card:hover {
 .lead {
   font-size: 1.15rem;
   color: var(--ink-soft);
+}
+
+.lustrumreis-lead {
+  padding: 18px 0;
 }
 
 .link-accent {
@@ -809,7 +832,7 @@ a.product-card:hover {
 }
 
 .spaarplannen-lead {
-  padding: 32px 0;
+  padding: 18px 0;
 }
 
 .text-center-top {
@@ -889,7 +912,7 @@ a.product-card:hover {
   padding: 40px 24px;
   display: flex;
   align-items: center;
-  gap: 40px;
+  gap: 0;
   position: relative;
 }
 
@@ -912,7 +935,7 @@ a.product-card:hover {
 
 .reis-dot {
   position: absolute;
-  left: 22%;
+  left: 27%;
   top: 50%;
   width: 20px;
   height: 20px;
@@ -924,7 +947,7 @@ a.product-card:hover {
 }
 
 .reis-row--b .reis-dot {
-  left: 78%;
+  left: 73%;
 }
 
 .reis-row--b .reis-row-inner {
@@ -933,8 +956,8 @@ a.product-card:hover {
 
 .reis-row-media {
   position: relative;
-  width: 260px;
-  flex-shrink: 0;
+  flex: 0 0 24%;
+  max-width: 320px;
 }
 
 .reis-row-media .placeholder-media {
@@ -954,6 +977,34 @@ a.product-card:hover {
   color: var(--green-900);
   font-size: 1.2rem;
   margin-bottom: 8px;
+}
+
+@media (min-width: 861px) {
+  .reis-row-body {
+    margin-left: 46%;
+  }
+
+  .reis-row--b .reis-row-body {
+    margin-left: 0;
+    margin-right: 46%;
+  }
+
+  .reis-day-date {
+    position: absolute;
+    top: 50%;
+    left: calc(27% + 22px);
+    transform: translateY(-50%);
+    white-space: nowrap;
+    text-align: left;
+    margin-bottom: 0;
+    z-index: 3;
+  }
+
+  .reis-row--b .reis-day-date {
+    left: auto;
+    right: calc(27% + 22px);
+    text-align: right;
+  }
 }
 
 .reis-day-text {
