@@ -33,8 +33,8 @@ jobs:
         id: host
         run: |
           case "${{ inputs.environment }}" in
-            prod) HOST="lustrum-oblomow.harmware.nl" ;;
-            acc)  HOST="acc-lustrum-oblomow.harmware.nl" ;;
+            prod) HOST="lustrumoblomow.nl" ;;
+            acc)  HOST="acc.lustrumoblomow.nl" ;;
             *)    echo "Unknown environment"; exit 1 ;;
           esac
           echo "host=${HOST}" >> "$GITHUB_OUTPUT"

@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Lustrumreis: VIIIe Lustrum Oblomow{% endblock %}
+{% block description %}Informatie over de lustrumreis van H.S.D. Oblomow.{% endblock %}
+{% block content %}
+
+  <section class="hero hero--compact">
+    <h1>Lustrumreis</h1>
+  </section>
+
+  <section class="lustrumreis-lead">
+    <div class="container container--narrow">
+      <p class="lead">
+        Van 29 juli t/m 7 augustus 2027 zal de lustrumreis plaatsvinden! Samen zullen we de
+        steden Krakow en Boedapest onveilig maken en genieten van wat deze steden ons te bieden
+        hebben. De precieze invulling volgt later, maar het belooft een geweldige reis te worden.
+      </p>
+      <p class="text-center-top">
+        <a href="https://docs.google.com/forms/d/e/1FAIpQLSfFU5--aJLZc-yLLrCeGpfL9rsSooZomfHlUnHdH0CfI_zMug/viewform" class="btn btn-gold" target="_blank" rel="noopener noreferrer">Inschrijven lustrumreis</a>
+      </p>
+    </div>
+  </section>
+
+  {% set reis_dagen = ["29 juli", "30 juli", "31 juli", "1 augustus", "2 augustus", "3 augustus", "4 augustus", "5 augustus", "6 augustus", "7 augustus"] %}
+  {% for dag in reis_dagen %}
+  {% set is_b = loop.index0 is odd %}
+  {% set own = 73 if is_b else 27 %}
+  <div class="reis-row{{ ' reis-row--b' if is_b else '' }}">
+    <div class="reis-row-inner">
+      <svg class="reis-row-svg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+        <path
+          class="reis-line-path"
+          d="M 50,0 C 50,25 {{ own }},25 {{ own }},50 C {{ own }},75 50,75 50,100"
+          vector-effect="non-scaling-stroke"
+        />
+      </svg>
+      <div class="reis-dot"></div>
+      <div class="reis-row-media">
+        <img src="/assets/img/lustrumreis/dag-{{ loop.index }}.jpg" alt="Dag {{ loop.index }} van de lustrumreis, {{ dag }}" class="split-photo" />
+      </div>
+      <div class="reis-row-body">
+        <div class="reis-day-date">{{ dag }}</div>
+        <p class="reis-day-text">De foto's dienen nu nog even ter sfeerimpressie, het definitieve programma volgt!</p>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+
+{% endblock %}

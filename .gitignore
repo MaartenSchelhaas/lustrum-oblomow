@@ -216,3 +216,12 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Design references (PDFs, Canva exports, etc.) - local only
+.design/
+/design/*
+!/design/.gitkeep
+
+# Claude Code project config/meta - local only
+CLAUDE.md
+.claude/
