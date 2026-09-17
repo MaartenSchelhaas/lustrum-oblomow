@@ -10,14 +10,17 @@
   <section class="lustrumreis-lead">
     <div class="container container--narrow">
       <p class="lead">
-        Van 30 juli t/m 8 augustus 2027 zal de lustrumreis plaatsvinden! Samen zullen we de
+        Van 29 juli t/m 7 augustus 2027 zal de lustrumreis plaatsvinden! Samen zullen we de
         steden Krakow en Boedapest onveilig maken en genieten van wat deze steden ons te bieden
         hebben. De precieze invulling volgt later, maar het belooft een geweldige reis te worden.
+      </p>
+      <p class="text-center-top">
+        <a href="https://docs.google.com/forms/d/e/1FAIpQLSfFU5--aJLZc-yLLrCeGpfL9rsSooZomfHlUnHdH0CfI_zMug/viewform" class="btn btn-gold" target="_blank" rel="noopener noreferrer">Inschrijven lustrumreis</a>
       </p>
     </div>
   </section>
 
-  {% set reis_dagen = ["30 juli", "31 juli", "1 augustus", "2 augustus", "3 augustus", "4 augustus", "5 augustus", "6 augustus", "7 augustus", "8 augustus"] %}
+  {% set reis_dagen = ["29 juli", "30 juli", "31 juli", "1 augustus", "2 augustus", "3 augustus", "4 augustus", "5 augustus", "6 augustus", "7 augustus"] %}
   {% for dag in reis_dagen %}
   {% set is_b = loop.index0 is odd %}
   {% set own = 73 if is_b else 27 %}
@@ -32,20 +35,11 @@
       </svg>
       <div class="reis-dot"></div>
       <div class="reis-row-media">
-        <div class="placeholder-media {{ '' if is_b else 'light' }}">
-          <div>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-              <rect x="3" y="3" width="18" height="18" rx="2" />
-              <circle cx="8.5" cy="8.5" r="1.5" />
-              <path d="M21 15l-5-5-4 4-3-3-6 6" />
-            </svg>
-            <div>Foto volgt</div>
-          </div>
-        </div>
+        <img src="/assets/img/lustrumreis/dag-{{ loop.index }}.jpg" alt="Dag {{ loop.index }} van de lustrumreis, {{ dag }}" class="split-photo" />
       </div>
       <div class="reis-row-body">
         <div class="reis-day-date">{{ dag }}</div>
-        <p class="reis-day-text">Programma van deze dag volgt.</p>
+        <p class="reis-day-text">De foto's dienen nu nog even ter sfeerimpressie, het definitieve programma volgt!</p>
       </div>
     </div>
   </div>

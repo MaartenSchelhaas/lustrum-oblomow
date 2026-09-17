@@ -477,7 +477,7 @@ sup {
   flex: 1;
 }
 
-.plan-card .plan-note {
+.plan-card p.plan-note {
   flex: 0 0 auto;
   font-size: 0.85rem;
   font-style: italic;
@@ -832,7 +832,11 @@ a.product-card:hover {
 }
 
 .spaarplannen-lead {
-  padding: 18px 0;
+  padding: 18px 0 0;
+}
+
+.spaarplannen-lead + .section {
+  padding-top: 16px;
 }
 
 .text-center-top {
@@ -960,7 +964,8 @@ a.product-card:hover {
   max-width: 320px;
 }
 
-.reis-row-media .placeholder-media {
+.reis-row-media .placeholder-media,
+.reis-row-media .split-photo {
   aspect-ratio: 4 / 3;
   position: relative;
   z-index: 2;
